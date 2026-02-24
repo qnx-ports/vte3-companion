@@ -1,0 +1,25 @@
+From e3da4ba6f2cd09235bc490492adf9a3e9aa50068 Mon Sep 17 00:00:00 2001
+From: felixlionardo <flionardo@blackberry.com>
+Date: Thu, 18 Sep 2025 15:12:52 -0400
+Subject: [PATCH] disable TIOCSCTTY
+
+---
+ src/spawn.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/spawn.cc b/src/spawn.cc
+index 8aa87942..7ca7df52 100644
+--- a/src/spawn.cc
++++ b/src/spawn.cc
+@@ -409,7 +409,7 @@ SpawnContext::exec(vte::libc::FD& child_report_error_pipe_write,
+         if (peer_fd == -1)
+                 return ExecError::GETPTPEER;
+ 
+-#ifdef TIOCSCTTY
++#if defined(TIOCSCTTY) && !defined(__QNXNTO__)
+         /* On linux, opening the PTY peer above already made it our controlling TTY (since
+          * previously there was none, after the setsid() call). However, it appears that e.g.
+          * on *BSD, that doesn't happen, so we need this explicit ioctl here.
+-- 
+2.34.1
+

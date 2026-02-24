@@ -1,0 +1,83 @@
+
+
+# Alpine-Contributor: Rasmus Thomsen <oss@cogitri.dev> 
+# Alpine-Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Aaron Bassett <abassett@qnx.com>
+pkgname=vte3
+pkgver=0.82.2
+pkgrel=0
+pkgdesc="Virtual Terminal Emulator library"
+url="https://gitlab.gnome.org/GNOME/vte"
+arch="all"
+license="LGPL-2.0-or-later"
+subpackages="$pkgname-app $pkgname-dbg $pkgname-dev $pkgname-lang"
+depends="adwaita-fonts gtk3 icu-libs simdutf lz4-libs gnutls"
+depends_dev="gtk3-dev pango-dev"
+makedepends="
+    bash
+    fast_float
+    fmt-dev
+    gnutls-dev
+    gobject-introspection-dev
+    gperf
+    gtk3-dev
+    icu-dev
+    libxml2-utils
+    lz4-dev
+    meson
+    ncurses-dev
+    pango-dev
+    pcre2-dev
+    simdutf-dev
+    vala
+    libc++-dev
+    clang
+    "
+source="https://gitlab.gnome.org/GNOME/vte/-/archive/$pkgver/vte-$pkgver.tar.gz
+    fix-W_EXITCODE.patch
+    0002-disable-TIOCPKT-on-QNX.patch
+    0003-replace-fdwalk.patch
+    0004-disable-TIOCSCTTY-on-QNX.patch
+    fix-compile-on-libc++.patch
+    "
+
+builddir="$srcdir/vte-$pkgver"
+
+build() {
+    CC="clang" \
+    CXX="clang++" \
+    abuild-meson \
+        -Dgtk4=false \
+        -Ddocs=false \
+        -D_systemd=false \
+        -Dc_link_args="-Wl,-z,execstack" \
+        -Dcpp_link_args="-Wl,-z,execstack" \
+        . output
+    meson compile -C output
+}
+
+check() {
+    meson test --print-errorlogs -C output
+}
+
+package() {
+    DESTDIR="$pkgdir" meson install --no-rebuild -C output
+}
+
+app() {
+    pkgdesc="$pkgdesc (apps)"
+
+    amove usr/bin
+    amove usr/share/xdg-terminals
+    amove usr/share/applications
+}
+
+
+sha512sums="
+c9c99c6c9ef2e5f03a024d31368fcf9b7f868aac9b463daf4c31aafa8b71da767b5b6e722440bcf6e54297d8ff2834f455f0cf0b761ad3c4ac4d8b68cb0bb350  vte-0.82.2.tar.gz
+e912f5a3dbb50cc3ea28c200d3e4adeecc39262e0f992dff351d26c7c82a9d079849e8b2a00e6f5bf654d7d393e2ab5513b3747fbdd673aed1968ce1d1f64982  fix-W_EXITCODE.patch
+9999c2531d76cfc741dbb4ec38310f7976f9591f977291c10377c89892bfdfe06db1bb886d47b311437cff96f23dc5766c72cb296fdbf3e369e232a98e877bd0  0002-disable-TIOCPKT-on-QNX.patch
+92b5999a80760c63c8af3d623dc5d6cfb9fbcf7eba61600923e88edee70b8ae4ba027e1d8905947b9e69b4eef84dc4a9c5c536d8fec53c2729fe0ab577b35dfe  0003-replace-fdwalk.patch
+21ceb1ba37e65b912f2236fa5b595dd582f5b4cb52766ab2dc1002947989273605cd19b6a2dfd6ddfaa0dfe478175c8fc87d476416a4705ff2b61669215c4d66  0004-disable-TIOCSCTTY-on-QNX.patch
+ba539a04db08aa1912dee33ff7778394b9634544c8a03317ca1d547c927be468b463510d76f7d03117d657134a2bb4c5975184cbc2f37d7434adaa390243d446  fix-compile-on-libc++.patch
+"

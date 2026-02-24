@@ -1,0 +1,20 @@
+--- vte-0.82.0.orig/meson.build	2025-10-09 18:25:43.000000000 +0000
++++ vte-0.82.0/meson.build	2025-10-09 18:25:51.000000000 +0000
+@@ -226,7 +226,6 @@
+ libc_feature_defines = [
+   ['_GNU_SOURCE', '1'],
+   ['_POSIX_C_SOURCE', '200809L'],
+-  ['_XOPEN_SOURCE', '800'],
+   ['_XOPEN_SOURCE_EXTENDED', '1'],
+ ]
+ 
+--- vte-0.82.0.orig/src/parser.hh	2025-10-09 18:25:43.000000000 +0000
++++ vte-0.82.0/src/parser.hh	2025-10-09 18:25:51.000000000 +0000
+@@ -22,6 +22,7 @@
+ #include <cstdio>
+ #include <optional>
+ #include <string_view>
++#include <algorithm>
+ 
+ #include "parser-arg.hh"
+ #include "parser-string.hh"

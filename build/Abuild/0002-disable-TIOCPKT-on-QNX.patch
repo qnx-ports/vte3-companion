@@ -1,0 +1,39 @@
+From c9cd6d43f5422a249176916fe7c0cdc46b550bea Mon Sep 17 00:00:00 2001
+From: felixlionardo <flionardo@blackberry.com>
+Date: Thu, 18 Sep 2025 14:10:20 -0400
+Subject: [PATCH] disable TIOCPKT on QNX
+
+---
+ src/pty.cc | 2 +-
+ src/vte.cc | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/pty.cc b/src/pty.cc
+index 067dba34..0589be7b 100644
+--- a/src/pty.cc
++++ b/src/pty.cc
+@@ -344,7 +344,7 @@ static int
+ fd_set_cpkt(vte::libc::FD& fd)
+ {
+         auto ret = 0;
+-#if defined(TIOCPKT)
++#if defined(TIOCPKT) && !defined(__QNXNTO__)
+         /* tty_ioctl(4) -> every read() gives an extra byte at the beginning
+          * notifying us of stop/start (^S/^Q) events. */
+         int one = 1;
+diff --git a/src/vte.cc b/src/vte.cc
+index 47034591..c55cf6d1 100644
+--- a/src/vte.cc
++++ b/src/vte.cc
+@@ -4440,7 +4440,7 @@ Terminal::pty_io_read(int const fd,
+ 			bp = chunk->begin_writing();
+ 			len = 0;
+ 			do {
+-#if defined(TIOCPKT)
++#if defined(TIOCPKT) && !defined(__QNXNTO__)
+                                 /* We'd like to read (fd, bp, rem); but due to TIOCPKT mode
+                                  * there's an extra input byte returned at the beginning.
+                                  * We need to see what that byte is, but otherwise drop it
+-- 
+2.34.1
+

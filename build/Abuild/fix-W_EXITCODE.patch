@@ -1,0 +1,18 @@
+Source: https://mail-archives.apache.org/mod_mbox/mesos-reviews/201610.mbox/%3C20161014170728.1720.54446@reviews.apache.org%3E
+Upstream: No
+Reason: fixes compilation with musl that doesn't define W* macros.
+
+--- a/src/widget.cc
++++ b/src/widget.cc
+@@ -33,6 +33,10 @@
+ #include "debug.hh"
+ #include "gobject-glue.hh"
+ 
++#ifndef W_EXITCODE
++#define W_EXITCODE(ret, sig)  ((ret) << 8 | (sig))
++#endif
++
+ #if VTE_GTK == 3
+ #define VTE_STYLE_CLASS_MONOSPACE GTK_STYLE_CLASS_MONOSPACE
+ #elif VTE_GTK == 4
+

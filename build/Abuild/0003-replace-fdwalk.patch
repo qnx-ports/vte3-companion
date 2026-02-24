@@ -1,0 +1,30 @@
+From 9b21ab121fb0d80cac64946258aa2c02cc77b7fe Mon Sep 17 00:00:00 2001
+From: felixlionardo <flionardo@blackberry.com>
+Date: Thu, 18 Sep 2025 14:47:13 -0400
+Subject: [PATCH] replace fdwalk
+
+---
+ src/spawn.cc | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/spawn.cc b/src/spawn.cc
+index 304efec6..8aa87942 100644
+--- a/src/spawn.cc
++++ b/src/spawn.cc
+@@ -81,8 +81,12 @@ cloexec_from(int fd)
+                 return res;
+ #endif /* CLOSE_RANGE_CLOEXEC */
+ 
+-        /* Fall back to fdwalk */
++        /* Fall back to GLib's fdwalk implementation */
++#ifdef __QNXNTO__
++        return g_fdwalk_set_cloexec(fd);
++#else
+         return fdwalk(set_cloexec_cb, &fd);
++#endif
+ }
+ 
+ static bool
+-- 
+2.34.1
+
