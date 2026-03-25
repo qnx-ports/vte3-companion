@@ -5,7 +5,7 @@
 # Maintainer: Aaron Bassett <abassett@qnx.com>
 pkgname=vte3
 pkgver=0.82.2
-pkgrel=${pkgrel:-0}
+pkgrel=0
 pkgdesc="Virtual Terminal Emulator library"
 url="https://gitlab.gnome.org/GNOME/vte"
 arch="all"
@@ -73,7 +73,6 @@ app() {
 }
 
 
-options="$options ${DISABLE_CHECK:+!check}"
 sha512sums="
 c9c99c6c9ef2e5f03a024d31368fcf9b7f868aac9b463daf4c31aafa8b71da767b5b6e722440bcf6e54297d8ff2834f455f0cf0b761ad3c4ac4d8b68cb0bb350  vte-0.82.2.tar.gz
 e912f5a3dbb50cc3ea28c200d3e4adeecc39262e0f992dff351d26c7c82a9d079849e8b2a00e6f5bf654d7d393e2ab5513b3747fbdd673aed1968ce1d1f64982  fix-W_EXITCODE.patch
